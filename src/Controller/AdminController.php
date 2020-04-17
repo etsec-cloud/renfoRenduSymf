@@ -6,7 +6,7 @@ use App\Entity\Utilisateur;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 /**
- * @Route("/{_locale}/admin")
+ * @Route("/admin")
  */
 class AdminController extends AbstractController
 {

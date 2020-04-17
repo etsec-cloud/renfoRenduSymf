@@ -34,9 +34,15 @@
         {% endfor %}
         </tbody>
     </table>
-    
+
+    {# Si on est admin on pourra créer un produit #}
+
+    {% if is_granted('ROLE_ADMIN')%}
+
     <h2>{{'produit.ajouter'|trans}}</h2>
 
     {{ include('produit/_form.html.twig') }}
+
+    {% endif %}
 
 {% endblock %}
