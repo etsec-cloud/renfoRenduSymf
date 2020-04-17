@@ -25,7 +25,7 @@ class AdminController extends AbstractController
      */
     public function editRole(Utilisateur $utilisateur = null){
         if($utilisateur == null){
-            return $this->redirectToRoute('pays');
+            return $this->redirectToRoute('admin');
         }
 
         if( $utilisateur->hasRole('ROLE_ADMIN') ){
@@ -39,8 +39,8 @@ class AdminController extends AbstractController
         $em->persist($utilisateur);
         $em->flush();
 
-        $this->addFlash("success", "Role modifié");
-        return $this->redirectToRoute('pays');
+        $this->addFlash("success", "Rôle modifié");
+        return $this->redirectToRoute('admin');
     }
 
     /**
