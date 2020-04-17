@@ -163,4 +163,14 @@ class Utilisateur implements UserInterface
 
         return $this;
     }
+
+
+    public function hasRole($role){
+        if( in_array($role, $this->getRoles()) ){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }
