@@ -36,6 +36,11 @@ class Produit
      */
     private $photo;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $Prix;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -85,6 +90,18 @@ class Produit
     public function setPhoto(string $photo): self
     {
         $this->photo = $photo;
+
+        return $this;
+    }
+
+    public function getPrix(): ?int
+    {
+        return $this->Prix;
+    }
+
+    public function setPrix(int $Prix): self
+    {
+        $this->Prix = $Prix;
 
         return $this;
     }
