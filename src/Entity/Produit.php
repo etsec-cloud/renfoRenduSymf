@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -40,6 +42,16 @@ class Produit
      * @ORM\Column(type="integer")
      */
     private $Prix;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\ContenuPanier", mappedBy="Produit")
+     */
+    private $ContenuPaniers;
+
+    public function __construct()
+    {
+        $this->ContenuPaniers = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -102,6 +114,34 @@ class Produit
     public function setPrix(int $Prix): self
     {
         $this->Prix = $Prix;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ContenuPanier[]
+     */
+    public function getContenuPaniers(): Collection
+    {
+        return $this->ContenuPaniers;
+    }
+
+    public function addContenuPanier(ContenuPanier $contenuPanier): self
+    {
+        if (!$this->ContenuPaniers->contains($contenuPanier)) {
+            $this->ContenuPaniers[] = $contenuPanier;
+            $contenuPanier->addProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContenuPanier(ContenuPanier $contenuPanier): self
+    {
+        if ($this->ContenuPaniers->contains($contenuPanier)) {
+            $this->ContenuPaniers->removeElement($contenuPanier);
+            $contenuPanier->removeProduit($this);
+        }
 
         return $this;
     }
