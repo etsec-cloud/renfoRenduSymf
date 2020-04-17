@@ -13,7 +13,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 /**
- * @Route("/")
+ * @Route("/{_locale}")
  */
 class ProduitController extends AbstractController
 {

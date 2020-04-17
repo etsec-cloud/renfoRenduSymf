@@ -8,19 +8,16 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>Description</th>
-                <th>Stock</th>
-                <th>Photo</th>
-                <th>Prix</th>
-                <th>actions</th>
+                <th>{{'produit.nom'|trans}}</th>
+                <th>{{'produit.description'|trans}}</th>
+                <th>{{'produit.stock'|trans}}</th>
+                <th>{{'produit.photo'|trans}}</th>
+                <th>{{'produit.prix'|trans}}</th>
             </tr>
         </thead>
         <tbody>
         {% for produit in produits %}
             <tr>
-                <td>{{ produit.id }}</td>
                 <td>{{ produit.nom }}</td>
                 <td>{{ produit.description }}</td>
                 <td>{{ produit.stock }}</td>
