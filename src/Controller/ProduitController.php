@@ -9,6 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 /**
  * @Route("/")
@@ -16,33 +18,39 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProduitController extends AbstractController
 {
     /**
-     * @Route("/", name="produit_index", methods={"GET"})
+     * @Route("/", name="produit_index", methods={"GET","POST"})
      */
-    public function index(ProduitRepository $produitRepository): Response
-    {
-        return $this->render('produit/index.html.twig', [
-            'produits' => $produitRepository->findAll(),
-        ]);
-    }
-
-    /**
-     * @Route("/new", name="produit_new", methods={"GET","POST"})
-     */
-    public function new(Request $request): Response
+    public function index(ProduitRepository $produitRepository, Request $request, TranslatorInterface $translator): Response
     {
         $produit = new Produit();
         $form = $this->createForm(ProduitType::class, $produit);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $fichier = $form->get('photoUpload')->getData();
+            if ($fichier) {
+                $nomFichier = uniqid() . '.' . $fichier->guessExtension();
+
+                try {
+                    $fichier->move(
+                        $this->getParameter('upload_dir'),
+                        $nomFichier
+                    );
+                } catch (FileException $e) {
+                    $this->addFlash("danger", $translator->trans('fichier.erreur'));
+                    return $this->redirectToRoute('home');
+                }
+                $produit->setPhoto($nomFichier);
+            }
+            $this->addFlash("success", $translator->trans('flash.produit.cree'));
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($produit);
             $entityManager->flush();
 
             return $this->redirectToRoute('produit_index');
         }
-
-        return $this->render('produit/new.html.twig', [
+        return $this->render('produit/index.html.twig', [
+            'produits' => $produitRepository->findAll(),
             'produit' => $produit,
             'form' => $form->createView(),
         ]);
@@ -53,7 +61,7 @@ class ProduitController extends AbstractController
      */
     public function show(Produit $produit): Response
     {
-        return $this->render('produit/show.html.twig', [
+        return $this->render('produit/produit.html.twig', [
             'produit' => $produit,
         ]);
     }
@@ -84,6 +92,9 @@ class ProduitController extends AbstractController
     public function delete(Request $request, Produit $produit): Response
     {
         if ($this->isCsrfTokenValid('delete'.$produit->getId(), $request->request->get('_token'))) {
+            if ($produit->getPhoto() != null) {
+                unlink($this->getParameter('upload_dir') . $produit->getPhoto());
+            }
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($produit);
             $entityManager->flush();

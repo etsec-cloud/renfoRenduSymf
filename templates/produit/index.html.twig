@@ -5,7 +5,7 @@
 {% block body %}
     <h1>Produit index</h1>
 
-    <table class="table">
+    <table class="table container">
         <thead>
             <tr>
                 <th>Id</th>
@@ -24,11 +24,10 @@
                 <td>{{ produit.nom }}</td>
                 <td>{{ produit.description }}</td>
                 <td>{{ produit.stock }}</td>
-                <td>{{ produit.photo }}</td>
+                <td><img src="{{ asset('uploads/' ~ produit.photo) }}"></td>
                 <td>{{ produit.Prix }}</td>
                 <td>
-                    <a href="{{ path('produit_show', {'id': produit.id}) }}">show</a>
-                    <a href="{{ path('produit_edit', {'id': produit.id}) }}">edit</a>
+                    <a href="{{ path('produit_show', {'id': produit.id}) }}">Voir</a>
                 </td>
             </tr>
         {% else %}
@@ -38,6 +37,9 @@
         {% endfor %}
         </tbody>
     </table>
+    
+    <h2>Create new Produit</h2>
 
-    <a href="{{ path('produit_new') }}">Create new</a>
+    {{ include('produit/_form.html.twig') }}
+
 {% endblock %}
