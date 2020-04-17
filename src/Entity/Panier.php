@@ -30,14 +30,14 @@ class Panier
     private $Dateachat;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\ContenuPanier", mappedBy="Panier", cascade={"persist", "remove"})
-     */
-    private $contenuPanier;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Utilisateur", mappedBy="panier")
      */
     private $Utilisateur;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Contenupanier", mappedBy="Panier", cascade={"persist", "remove"})
+     */
+    private $contenupanier;
 
     public function __construct()
     {
@@ -75,23 +75,6 @@ class Panier
         return $this;
     }
 
-    public function getContenuPanier(): ?ContenuPanier
-    {
-        return $this->contenuPanier;
-    }
-
-    public function setContenuPanier(?ContenuPanier $contenuPanier): self
-    {
-        $this->contenuPanier = $contenuPanier;
-
-        // set (or unset) the owning side of the relation if necessary
-        $newPanier = null === $contenuPanier ? null : $this;
-        if ($contenuPanier->getPanier() !== $newPanier) {
-            $contenuPanier->setPanier($newPanier);
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection|Utilisateur[]
@@ -119,6 +102,24 @@ class Panier
             if ($utilisateur->getPanier() === $this) {
                 $utilisateur->setPanier(null);
             }
+        }
+
+        return $this;
+    }
+
+    public function getContenupanier(): ?Contenupanier
+    {
+        return $this->contenupanier;
+    }
+
+    public function setContenupanier(?Contenupanier $contenupanier): self
+    {
+        $this->contenupanier = $contenupanier;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newPanier = null === $contenupanier ? null : $this;
+        if ($contenupanier->getPanier() !== $newPanier) {
+            $contenupanier->setPanier($newPanier);
         }
 
         return $this;

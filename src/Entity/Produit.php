@@ -61,14 +61,9 @@ class Produit
     private $Prix;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\ContenuPanier", mappedBy="Produit")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Contenupanier", inversedBy="Produit")
      */
-    private $ContenuPaniers;
-
-    public function __construct()
-    {
-        $this->ContenuPaniers = new ArrayCollection();
-    }
+    private $contenupanier;
 
     public function getId(): ?int
     {
@@ -135,30 +130,14 @@ class Produit
         return $this;
     }
 
-    /**
-     * @return Collection|ContenuPanier[]
-     */
-    public function getContenuPaniers(): Collection
+    public function getContenupanier(): ?Contenupanier
     {
-        return $this->ContenuPaniers;
+        return $this->contenupanier;
     }
 
-    public function addContenuPanier(ContenuPanier $contenuPanier): self
+    public function setContenupanier(?Contenupanier $contenupanier): self
     {
-        if (!$this->ContenuPaniers->contains($contenuPanier)) {
-            $this->ContenuPaniers[] = $contenuPanier;
-            $contenuPanier->addProduit($this);
-        }
-
-        return $this;
-    }
-
-    public function removeContenuPanier(ContenuPanier $contenuPanier): self
-    {
-        if ($this->ContenuPaniers->contains($contenuPanier)) {
-            $this->ContenuPaniers->removeElement($contenuPanier);
-            $contenuPanier->removeProduit($this);
-        }
+        $this->contenupanier = $contenupanier;
 
         return $this;
     }

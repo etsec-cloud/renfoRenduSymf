@@ -5,11 +5,13 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\ContenuPanierRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\ContenupanierRepository")
  */
-class ContenuPanier
+class Contenupanier
 {
     /**
      * @ORM\Id()
@@ -19,17 +21,20 @@ class ContenuPanier
     private $id;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Produit", inversedBy="ContenuPaniers")
+     * @ORM\OneToMany(targetEntity="App\Entity\Produit", mappedBy="contenupanier")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $Produit;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Panier", inversedBy="contenuPanier", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Panier", inversedBy="contenupanier", cascade={"persist", "remove"})
      */
     private $Panier;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotNull
+     * @Assert\GreaterThan(value = 0)
      */
     private $Quantite;
 
@@ -40,7 +45,8 @@ class ContenuPanier
 
     public function __construct()
     {
-        $this->Produit = new ArrayCollection();
+        $this->setProduit($produit);
+        $this->setDateAjout(new \DateTime);
     }
 
     public function getId(): ?int
@@ -60,6 +66,7 @@ class ContenuPanier
     {
         if (!$this->Produit->contains($produit)) {
             $this->Produit[] = $produit;
+            $produit->setContenupanier($this);
         }
 
         return $this;
@@ -69,6 +76,10 @@ class ContenuPanier
     {
         if ($this->Produit->contains($produit)) {
             $this->Produit->removeElement($produit);
+            // set the owning side to null (unless already changed)
+            if ($produit->getContenupanier() === $this) {
+                $produit->setContenupanier(null);
+            }
         }
 
         return $this;

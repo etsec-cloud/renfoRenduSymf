@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\ContenuPanier;
+use App\Entity\Contenupanier;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method ContenuPanier|null find($id, $lockMode = null, $lockVersion = null)
- * @method ContenuPanier|null findOneBy(array $criteria, array $orderBy = null)
- * @method ContenuPanier[]    findAll()
- * @method ContenuPanier[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Contenupanier|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Contenupanier|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Contenupanier[]    findAll()
+ * @method Contenupanier[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ContenuPanierRepository extends ServiceEntityRepository
+class ContenupanierRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, ContenuPanier::class);
+        parent::__construct($registry, Contenupanier::class);
     }
 
     // /**
-    //  * @return ContenuPanier[] Returns an array of ContenuPanier objects
+    //  * @return Contenupanier[] Returns an array of Contenupanier objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class ContenuPanierRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?ContenuPanier
+    public function findOneBySomeField($value): ?Contenupanier
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.exampleField = :val')
