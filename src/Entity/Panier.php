@@ -2,8 +2,7 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -29,19 +28,11 @@ class Panier
     private $Dateachat;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Utilisateur", mappedBy="Panier")
-     */
-    private $Utilisateur;
-
-    /**
      * @ORM\OneToOne(targetEntity="App\Entity\ContenuPanier", mappedBy="Panier", cascade={"persist", "remove"})
      */
     private $contenuPanier;
 
-    public function __construct()
-    {
-        $this->Utilisateur = new ArrayCollection();
-    }
+   
 
     public function getId(): ?int
     {
@@ -68,37 +59,6 @@ class Panier
     public function setDateachat(\DateTimeInterface $Dateachat): self
     {
         $this->Dateachat = $Dateachat;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Utilisateur[]
-     */
-    public function getUtilisateur(): Collection
-    {
-        return $this->Utilisateur;
-    }
-
-    public function addUtilisateur(Utilisateur $utilisateur): self
-    {
-        if (!$this->Utilisateur->contains($utilisateur)) {
-            $this->Utilisateur[] = $utilisateur;
-            $utilisateur->setPanier($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUtilisateur(Utilisateur $utilisateur): self
-    {
-        if ($this->Utilisateur->contains($utilisateur)) {
-            $this->Utilisateur->removeElement($utilisateur);
-            // set the owning side to null (unless already changed)
-            if ($utilisateur->getPanier() === $this) {
-                $utilisateur->setPanier(null);
-            }
-        }
 
         return $this;
     }

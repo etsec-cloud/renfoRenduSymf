@@ -3,11 +3,14 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UtilisateurRepository")
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
-class Utilisateur
+class Utilisateur implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -17,108 +20,129 @@ class Utilisateur
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=180, unique=true)
      */
-    private $Nom;
+    private $email;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
+
+    /**
+     * @var string The hashed password
+     * @ORM\Column(type="string")
+     */
+    private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Prenom;
+    private $nom;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Email;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $Mdp;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $Roles;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Panier", inversedBy="Utilisateur")
-     */
-    private $Panier;
+    private $prenom;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getEmail(): ?string
     {
-        return $this->Nom;
+        return $this->email;
     }
 
-    public function setNom(string $Nom): self
+    public function setEmail(string $email): self
     {
-        $this->Nom = $Nom;
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUsername(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getPassword(): string
+    {
+        return (string) $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getSalt()
+    {
+        // not needed when using the "bcrypt" algorithm in security.yaml
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
 
         return $this;
     }
 
     public function getPrenom(): ?string
     {
-        return $this->Prenom;
+        return $this->prenom;
     }
 
-    public function setPrenom(string $Prenom): self
+    public function setPrenom(string $prenom): self
     {
-        $this->Prenom = $Prenom;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->Email;
-    }
-
-    public function setEmail(string $Email): self
-    {
-        $this->Email = $Email;
-
-        return $this;
-    }
-
-    public function getMdp(): ?string
-    {
-        return $this->Mdp;
-    }
-
-    public function setMdp(string $Mdp): self
-    {
-        $this->Mdp = $Mdp;
-
-        return $this;
-    }
-
-    public function getRoles(): ?string
-    {
-        return $this->Roles;
-    }
-
-    public function setRoles(string $Roles): self
-    {
-        $this->Roles = $Roles;
-
-        return $this;
-    }
-
-    public function getPanier(): ?Panier
-    {
-        return $this->Panier;
-    }
-
-    public function setPanier(?Panier $Panier): self
-    {
-        $this->Panier = $Panier;
+        $this->prenom = $prenom;
 
         return $this;
     }
