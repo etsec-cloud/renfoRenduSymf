@@ -19,6 +19,7 @@ class ProduitController extends AbstractController
 {
     /**
      * @Route("/", name="produit_index", methods={"GET","POST"})
+     * Page d'accueil
      */
     public function index(ProduitRepository $produitRepository, Request $request, TranslatorInterface $translator): Response
     {
@@ -28,7 +29,7 @@ class ProduitController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $fichier = $form->get('photoUpload')->getData();
-            if ($fichier) {
+            if ($fichier) {//Creation de l'extension et envoi de la photo
                 $nomFichier = uniqid() . '.' . $fichier->guessExtension();
 
                 try {
@@ -41,15 +42,15 @@ class ProduitController extends AbstractController
                     return $this->redirectToRoute('home');
                 }
                 $produit->setPhoto($nomFichier);
+                $this->addFlash("success", $translator->trans('flash.produit.cree'));
             }
-            $this->addFlash("success", $translator->trans('flash.produit.cree'));
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($produit);
             $entityManager->flush();
 
             return $this->redirectToRoute('produit_index');
         }
-        return $this->render('produit/index.html.twig', [
+        return $this->render('produit/index.html.twig', [// Ce qu'on va afficher dans l'accueil
             'produits' => $produitRepository->findAll(),
             'produit' => $produit,
             'form' => $form->createView(),
@@ -58,6 +59,7 @@ class ProduitController extends AbstractController
 
     /**
      * @Route("/produit/{id}", name="produit_show", methods={"GET"})
+     * Page d'un produit
      */
     public function show(Produit $produit): Response
     {
@@ -68,8 +70,9 @@ class ProduitController extends AbstractController
 
     /**
      * @Route("/produit/{id}/edit", name="produit_edit", methods={"GET","POST"})
+     * Page de modification d'un produit
      */
-    public function edit(Request $request, Produit $produit): Response
+    public function edit(Request $request, Produit $produit, TranslatorInterface $translator): Response
     {
         $form = $this->createForm(ProduitType::class, $produit);
         $form->handleRequest($request);
@@ -88,16 +91,18 @@ class ProduitController extends AbstractController
 
     /**
      * @Route("/{id}", name="produit_delete", methods={"DELETE"})
+     * Page de suppression d'un produit
      */
-    public function delete(Request $request, Produit $produit): Response
+    public function delete(Request $request, Produit $produit, TranslatorInterface $translator): Response
     {
         if ($this->isCsrfTokenValid('delete'.$produit->getId(), $request->request->get('_token'))) {
-            if ($produit->getPhoto() != null) {
+            if ($produit->getPhoto() != null) {// On delink et supprime l'image si elle est en local.
                 unlink($this->getParameter('upload_dir') . $produit->getPhoto());
             }
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($produit);
             $entityManager->flush();
+            $this->addFlash('success', $translator->trans('flash.produit.supprimer'));
         }
 
         return $this->redirectToRoute('produit_index');

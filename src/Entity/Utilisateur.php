@@ -45,6 +45,11 @@ class Utilisateur implements UserInterface
      */
     private $prenom;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Panier", inversedBy="Utilisateur")
+     */
+    private $panier;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -143,6 +148,18 @@ class Utilisateur implements UserInterface
     public function setPrenom(string $prenom): self
     {
         $this->prenom = $prenom;
+
+        return $this;
+    }
+
+    public function getPanier(): ?Panier
+    {
+        return $this->panier;
+    }
+
+    public function setPanier(?Panier $panier): self
+    {
+        $this->panier = $panier;
 
         return $this;
     }

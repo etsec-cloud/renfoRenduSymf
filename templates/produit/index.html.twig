@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Produit index{% endblock %}
+{% block title %}{{'produit.titre'|trans}}{% endblock %}
 
 {% block body %}
-    <h1>Produit index</h1>
+    <h1>{{'produit.titre'|trans}}</h1>
 
     <table class="table">
         <thead>
@@ -22,20 +22,20 @@
                 <td>{{ produit.description }}</td>
                 <td>{{ produit.stock }}</td>
                 <td><img src="{{ asset('uploads/' ~ produit.photo) }}"></td>
-                <td>{{ produit.Prix }}</td>
+                <td>{{ produit.Prix }}€</td>
                 <td>
                     <a href="{{ path('produit_show', {'id': produit.id}) }}">Voir</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="7">no records found</td>
+                <td colspan="7">{{'produit.noproduit'|trans}}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
     
-    <h2>Create new Produit</h2>
+    <h2>{{'produit.ajouter'|trans}}</h2>
 
     {{ include('produit/_form.html.twig') }}
 
